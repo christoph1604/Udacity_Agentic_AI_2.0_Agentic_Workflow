@@ -1,4 +1,4 @@
-# TODO: 1 - Import the AugmentedPromptAgent class
+from workflow_agents.base_agents import AugmentedPromptAgent
 import os
 from dotenv import load_dotenv
 
@@ -11,13 +11,12 @@ openai_api_key = os.getenv("OPENAI_API_KEY")
 prompt = "What is the capital of France?"
 persona = "You are a college professor; your answers always start with: 'Dear students,'"
 
-# TODO: 2 - Instantiate an object of AugmentedPromptAgent with the required parameters
+augmentedPromptAgent = AugmentedPromptAgent(openai_api_key, persona)
 
-# TODO: 3 - Send the 'prompt' to the agent and store the response in a variable named 'augmented_agent_response'
+augmented_agent_response=augmentedPromptAgent.respond(prompt)
 
 # Print the agent's response
 print(augmented_agent_response)
 
-# TODO: 4 - Add a comment explaining:
-# - What knowledge the agent likely used to answer the prompt.
-# - How the system prompt specifying the persona affected the agent's response.
+print("The Augmented Prompt Agent uses - additionally to the knowledge contained in the LLM itself - additional knowledge which can be given to him via a system prompt." \
+" If in the system prompt a persona is defined, the agent will formulate his answer from the perspective of the persona - and based on the persona's knowledge.")
