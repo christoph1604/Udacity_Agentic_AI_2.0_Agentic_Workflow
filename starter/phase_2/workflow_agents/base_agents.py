@@ -268,7 +268,9 @@ class EvaluationAgent:
                 response = client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=[
-                        {"role": "system", "content": f"{self.persona}. Forget all previous context."},
+                        {"role": "system", "content": f"You as a judge now give instructions on how to improve an answer."},
+                        {"role": "user", "content": "Initial prompt: "+prompt_to_evaluate},
+                        {"role": "user", "content": "Response from worker: "+response_from_worker},
                         {"role": "user", "content": instruction_prompt}
                     ],
                     temperature=0
