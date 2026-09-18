@@ -28,6 +28,7 @@ class DirectPromptAgent:
         
 # AugmentedPromptAgent class definition
 class AugmentedPromptAgent:
+
     def __init__(self, openai_api_key, persona):
         """Initialize the agent with given attributes."""
         self.openai_api_key = openai_api_key
@@ -51,6 +52,7 @@ class AugmentedPromptAgent:
 
 # KnowledgeAugmentedPromptAgent class definition
 class KnowledgeAugmentedPromptAgent:
+    
     def __init__(self, openai_api_key, persona, knowledge):
         """Initialize the agent with provided attributes."""
         self.persona = persona
@@ -157,8 +159,11 @@ class RAGKnowledgePromptAgent:
                 "end_char": end
             })
 
-            start = end - self.chunk_overlap
-            chunk_id += 1
+            if end != len(text):    
+                start = end - self.chunk_overlap
+                chunk_id += 1
+            else:
+                break
 
         with open(f"chunks-{self.unique_filename}", 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=["text", "chunk_size"])
