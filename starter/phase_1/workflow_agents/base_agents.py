@@ -232,7 +232,7 @@ class EvaluationAgent:
         number_of_iterations=0
         for i in range(self.max_interactions):
             print(f"\n--- Interaction {i+1} ---")
-            number_of_iterations=i
+            number_of_iterations=i+1
 
             print(" Step 1: Worker agent generates a response to the prompt")
             print(f"Prompt:\n{prompt_to_evaluate}")

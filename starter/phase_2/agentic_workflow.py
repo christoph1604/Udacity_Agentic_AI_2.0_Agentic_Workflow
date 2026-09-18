@@ -22,8 +22,8 @@ knowledge_action_planning = (
     "For generating a development plan for a product, the following 3 steps need to be executed:\n"
     "1) User stories need to be generated based on a product specification. Stories should contain a persona, an action and a desired outcome. Each story represents a specific functionality of the product."
     "2) The generated user stories need to be grouped into features."
-    "3) Concrete engineering tasks need to be derived from the user stories/features. They represent the engineering work required to develop the product."
-    "Assure that for the generation of a product development plan, exactly these 3 steps are executed in sequence."
+    "3) Concrete engineering tasks need to be derived from the user stories/features."
+    "Assure that for the generation of a product development plan, exactly these 3 steps are executed in sequence. A development plan for a product contains all these components."
     # "Stories are defined from a product spec by identifying a "
     # "persona, an action, and a desired outcome for each story. "
     # "Each story represents a specific functionality of the product "
@@ -41,17 +41,16 @@ knowledge_product_manager = (
     "Stories are defined by writing sentences with a persona, an action, and a desired outcome. "
     "The sentences always start with: As a "
     "Write several stories for the product spec below, where the personas are the different users of the product. "
+    "Each story should have a clear identifier."
+    "Example: CSR-001: As a ... "
     f"{product_spec}"
 )
 product_manager_knowledge_agent=KnowledgeAugmentedPromptAgent(openai_api_key, persona_product_manager, knowledge_product_manager)
 
 # Product Manager - Evaluation Agent
-persona_pm_eval_agent="You are a meticulous evaluation agent. You evaluate and verify the answers of other agents."
-product_manager_eval_crit=(
-    "The answers of the agents should be user stories. The description of the stories should have the following structure:"
-    "As a [type of user], I want [an action or feature] so that [benefit/value]."
-    "The description always start with 'As a ' and contains the following information: Requesting persona, requested action and desired outcome."
-)
+persona_pm_eval_agent="You are an evaluation agent that checks the answers of other worker agents"
+product_manager_eval_crit="The answer should be stories that follow the following structure: As a [type of user], I want [an action or feature] so that [benefit/value]."
+
 product_manager_evaluation_agent = EvaluationAgent(openai_api_key, persona_pm_eval_agent, product_manager_eval_crit, product_manager_knowledge_agent, 3)
 
 # Program Manager - Knowledge Augmented Prompt Agent
@@ -73,7 +72,7 @@ program_manager_evaluation_agent = EvaluationAgent(openai_api_key, persona_progr
 
 # Development Engineer - Knowledge Augmented Prompt Agent
 persona_dev_engineer = "You are a Development Engineer, you are responsible for defining the development tasks for a product."
-knowledge_dev_engineer = "Development tasks are defined by identifying what needs to be built to implement each user story."
+knowledge_dev_engineer = "Development tasks are defined by identifying what needs to be built to implement each user story. The tasks represent the engineering work required to develop the product. Within the task, reference the user story ID in the field 'Related User Story'. Assure that all user stories are covered."
 development_engineer_knowledge_agent = KnowledgeAugmentedPromptAgent(openai_api_key, persona_dev_engineer, knowledge_dev_engineer)
 
 # Development Engineer - Evaluation Agent
@@ -148,5 +147,8 @@ for i, step in enumerate(steps):
     completed_steps.append(result)
     print(f"Workflow step {i+1}: {step}")
     print(f"Result: {result}")
-if(completed_steps):
-    print(f"Final output of workflow: {completed_steps[-1]}")
+if(completed_steps and len(completed_steps)==3):
+    final_output = "User Stories:\n"+completed_steps[0]+"\n\nFeatures:\n"+completed_steps[1]+"\n\nTasks:\n"+completed_steps[2]
+
+    with open("./phase_2_output/agentic_workflow_output.txt", "w", encoding="utf-8") as f:
+        f.write(final_output)
